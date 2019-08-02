@@ -6,6 +6,14 @@ describe('Testing Alist methods and functions', () => {
                 expected: []
             },
             {
+                args: null,
+                expected: []
+            },
+            {
+                args: undefined,
+                expected: []
+            },
+            {
                 args: [1],
                 expected: [1]
             },
@@ -147,6 +155,14 @@ describe('Testing Alist methods and functions', () => {
                 expected: {
                     array: [0],
                     len: 1
+                }
+            },
+            {
+                array: [],
+                elem: undefined,
+                expected: {
+                    array: [],
+                    len: 0
                 }
             },
             {
@@ -325,6 +341,14 @@ describe('Testing Alist methods and functions', () => {
                 expected: {
                     array: ['string', 2, 4, 6, 8],
                     len: 5
+                }
+            },
+            {
+                array: [2, 4, 6, 8],
+                elem: undefined,
+                expected: {
+                    array: [2, 4, 6, 8],
+                    len: 4
                 }
             }
         ];
@@ -674,22 +698,6 @@ describe('Testing Alist methods and functions', () => {
             it(`Should return ${expected}, when array = [${array}], index of change element = ${index} and new value = ${value}`, () => {
                 assert.deepEqual(actual, expected);
             });
-        });
-    });
-
-    // describe('set() ERROR', () => {
-    //     let alist1 = new Alist();
-    //
-    //     it(`Catch ERROR`, () => {
-    //         assert.throw(alist1.set, Error, 'Invalid initialization!');
-    //     });
-    // });
-
-    describe('init() ERROR', () => {
-        let alist1 = new AList();
-
-        it(`Catch ERROR`, () => {
-            assert.throw(alist1.init, Error, 'Invalid initialization!');
         });
     });
 });

@@ -4,7 +4,7 @@ function AList () {
     this.init = arr => {
 
         if (!arr  && !Array.isArray(arr)) {
-            throw new Error("Invalid initialization!");
+            array = [];
         } else {
 
             for (let i = 0; i < arr.length; i++) {
@@ -13,8 +13,6 @@ function AList () {
 
         }
     };
-
-    //this.init(arguments);
 
     this.getArray = () => {
         return array;
@@ -46,14 +44,18 @@ function AList () {
     };
 
     this.push = elem => {
-        array[this.getSize()] = elem;
+
+        if (elem !== undefined) {
+            array[this.getSize()] = elem;
+        }
+
         return this.getSize();
     };
 
     this.pop = () => {
         let lastElem = array[this.getSize() - 1];
 
-        if (array.length === 0) {
+        if (this.getSize() === 0) {
             lastElem = undefined;
         } else {
             array.length = this.getSize() - 1;
@@ -65,11 +67,11 @@ function AList () {
     this.shift = () => {
         let firstElem = array[0];
 
-        if (array.length === 0) {
+        if (this.getSize() === 0) {
             firstElem = undefined;
         } else {
 
-            for (let i = 0; i < this.getSize(); i++) {
+            for (let i = 0; i < this.getSize() - 1; i++) {
                 array[i] = array[i + 1];
             }
 
@@ -79,13 +81,16 @@ function AList () {
         return firstElem;
     };
 
-    this.unshift = (elem) => {
+    this.unshift = elem => {
 
-        for (let i = this.getSize(); i > 0; i--) {
-            array[i] = array[i-1];
+        if (elem !== undefined) {
+
+            for (let i = this.getSize(); i > 0; i--) {
+                array[i] = array[i - 1];
+            }
+
+            array[0] = elem;
         }
-
-        array[0] = elem;
 
         return this.getSize();
     };
@@ -171,7 +176,7 @@ function AList () {
         return spliceArray;
     };
 
-    this.sort = comparator => {
+    this.sort = (comparator = sortFunc) => {
 
         for (let i = 0; i < array.length; i++) {
             for (let j = 0; j < array.length - i - 1; j++){
@@ -212,4 +217,3 @@ const sortFunc = (first, second) => {
     }
 
 };
-
