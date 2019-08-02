@@ -50,7 +50,7 @@ function LList () {
             } else {
                 string += temp.value + ']"';
             }
-
+            console.log(string);
         }
 
         return string;
@@ -164,12 +164,13 @@ function LList () {
         temp.value = value;
     };
 
-    this.splice = (startIndex, amountDelete, insertElem) => {
-        let definedStartIndex = 0;
-        let definedAmountDeleted = 0;
-        let definedInsertElem = [];
-        let spliceArray = [];
-
+    this.splice = (startIndex, amountDelete, ...insertElem) => {
+        let definedStartIndex = 0;//переменая для обработанного от ошибок начального индекса
+        let definedAmountDeleted = 0;// переменная для обработанного от ошибок количества удалений
+        let definedInsertElem = [];// переменная для обработанного от ошибок массива вставленных елементов
+        let spliceArray = [];//возвращаемый массив вырезанных елементов
+        let tempSize = 0;//перемменная для счета новой длинны root
+        //---------------------------------------------------------обработка ошибок ввода
         if (!startIndex) {
             definedStartIndex = 0;
         } else if (!!Number(startIndex)) {
@@ -203,38 +204,64 @@ function LList () {
             }
 
         }
-
+        //----------------------------------------------------------обработка закончена
         spliceArray = this.slice(definedStartIndex,definedStartIndex + definedAmountDeleted);
 
-        //for (let j = definedInsertElem.length - 1; j >= 0; j--) {
-        //     let i = 0;
-        //     let j = definedInsertElem.length - 1;
-        //     let temp = root;
-        //     let beforeElem = null;
-        //
-        //     while (i <= definedStartIndex && j !== 0) {
-        //         console.log(i);
-        //         if (i === definedStartIndex) {
-        //             let node = new Node(definedInsertElem[j]);
-        //             console.log(node.value);
-        //             node.next = temp;
-        //             j--;
-        //             if (temp === root) {
-        //                 root = node;
-        //             } else {
-        //                 beforeElem.next = node;
-        //             }
-        //
-        //             break;
-        //             //i = definedStartIndex - ;
-        //         }
-        //
-        //         beforeElem = temp;
-        //         temp = temp.next;
-        //         i++;
-        //     }
+        let curIndex = 0;
+        let temp = root;
 
-       // }
+        while (curIndex < definedStartIndex) {//веду указатель до места удаления елементов
+            curIndex++;
+            temp = temp.next;
+        }
+
+        let afterSplicedTemp = temp;
+
+        while (curIndex < definedStartIndex + definedAmountDeleted) {//веду указатель до конца удаленных елементов
+            curIndex++;
+            afterSplicedTemp = afterSplicedTemp.next;
+        }
+
+        let tempRoot = null;
+
+        for (let i = 0; i < definedInsertElem.length; i++ ) {//в новую ечейку записываю елементы которые нужно вставить
+            const node = new Node(definedInsertElem[i]);
+
+            if (tempRoot === null) {
+                tempRoot = node;
+            } else {
+                let tempNode = tempRoot;
+
+                while (tempNode.next) {
+                    tempNode = tempNode.next;
+                }
+
+                tempNode.next = node;
+            }
+
+            tempSize++;
+        }
+
+        for (let i = definedInsertElem.length - 1; i >= 0; i--) {//перед указателем на конец удаленных елементов добавляю вставленные елементы
+            let node = new Node(definedInsertElem[i]);
+            tempRoot = afterSplicedTemp;
+            node.next = tempRoot;
+            afterSplicedTemp = node;
+            tempSize++;
+        }
+
+        let leftPart = this.slice(0, definedStartIndex);
+
+        for (let i = leftPart.length - 1; i >= 0; i--) {// и опять дообваляю неизмененную левуб часть(до удаленных елементов) к тому что получиллось в преведущем цикле
+            let node = new Node(leftPart[i]);
+            root = afterSplicedTemp;
+            node.next = root;
+            afterSplicedTemp = node;
+            tempSize++;
+        }
+
+        size = tempSize;
+        root = afterSplicedTemp;
 
         return spliceArray;
     };
@@ -280,3 +307,9 @@ const sortFunc = (first, second) => {
     }
 
 };
+
+let llist = new LList();
+llist.init([0, 1, 2, 3, 4, 5, 6, 7]);
+console.log(llist.splice(2,4, '*', '#'));
+console.log(llist.getSize());
+console.log(llist.toString());
