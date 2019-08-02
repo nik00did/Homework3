@@ -43,8 +43,11 @@ function LList () {
         let temp = root;
 
         for (let i = 0; i < this.getSize(); i++) {
-            array[i] = temp.value;
-            temp = temp.next;
+
+            if(temp !== null){
+                array[i] = temp.value;
+                temp = temp.next;
+            }
         }
 
         return array;
@@ -137,7 +140,7 @@ function LList () {
             start = 0;
         }
 
-        if (!finishIndex || finishIndex > this.getSize()) {
+        if ((!finishIndex && finishIndex !== 0) || finishIndex > this.getSize()) {
             finish = this.getSize();
         }
 
@@ -155,40 +158,6 @@ function LList () {
         return array;
     };
 
-    this.get = index => {
-        let temp = root;
-        let curIndex = 0;
-
-        if (index > this.getSize() || index < 0 ) {
-            throw new Error("Index out of array!");
-        } else {
-
-            while (curIndex < index) {
-                curIndex++;
-                temp = temp.next;
-            }
-
-        }
-
-        return temp.value;
-    };
-
-    this.set = (index, value) => {
-        let temp = root;
-        let curIndex = 0;
-
-        if (index > this.getSize() || index < 0) {
-            throw new Error("Index out of array!");
-        }
-
-        while (curIndex < index) {
-            curIndex++;
-            temp = temp.next;
-        }
-
-        temp.value = value;
-    };
-
     this.splice = (startIndex, amountDelete, ...insertElem) => {
         let definedStartIndex = 0;//переменая для обработанного от ошибок начального индекса
         let definedAmountDeleted = 0;// переменная для обработанного от ошибок количества удалений
@@ -202,8 +171,6 @@ function LList () {
 
             if (startIndex > this.getSize()) {
                 definedStartIndex = this.getSize();
-            } else if (startIndex < -this.getSize()) {
-                definedStartIndex = 0;
             } else {
                 definedStartIndex = parseInt(startIndex);
             }
@@ -242,9 +209,16 @@ function LList () {
 
         let afterSplicedTemp = temp;
 
-        while (curIndex < definedStartIndex + definedAmountDeleted) {//веду указатель до конца удаленных елементов
+        while (curIndex < definedStartIndex + definedAmountDeleted && afterSplicedTemp !== null) {//веду указатель до конца удаленных елементов
             curIndex++;
             afterSplicedTemp = afterSplicedTemp.next;
+        }
+
+        let tempAfterSplicedTemp = afterSplicedTemp;
+
+        while (tempAfterSplicedTemp !== null) {
+            tempAfterSplicedTemp = tempAfterSplicedTemp.next;
+            tempSize++;
         }
 
         let tempRoot = null;
@@ -291,7 +265,43 @@ function LList () {
         return spliceArray;
     };
 
-    this.sort = comparator => {
+    this.get = index => {
+        let temp = root;
+        let curIndex = 0;
+
+        if (this.getSize() === 0 ) {
+            return undefined;
+        } else if (index > this.getSize() || index < 0 ) {
+            return undefined;
+        } else {
+
+            while (curIndex < index && temp !== null) {
+                curIndex++;
+                temp = temp.next;
+            }
+
+        }
+
+        return temp.value;
+    };
+
+    this.set = (index, value) => {
+        let temp = root;
+        let curIndex = 0;
+
+        if (index > this.getSize() || index < 0) {
+            return ;
+        }
+
+        while (curIndex < index) {
+            curIndex++;
+            temp = temp.next;
+        }
+
+        temp.value = value;
+    };
+
+    this.sort = (comparator = sortFunc) => {
         let current = root;
 
         for (let i = 0; i < this.getSize(); i++) {
@@ -332,6 +342,3 @@ const sortFunc = (first, second) => {
     }
 
 };
-
-let array = [0, 1, 2 ,3 ,4 ,5];
-console.log(array.slice(undefined, 5));
