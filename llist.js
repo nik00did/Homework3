@@ -26,12 +26,28 @@ function LList () {
         return this.getSize();
     };
 
-    this.init = (array) => {
+    this.init = array => {
+
+        if (!array) {
+            throw new Error("Invalid initialization!");
+        }
 
         for (let i = 0; i < array.length; i++) {
             this.push(array[i]);
         }
 
+    };
+
+    this.getArray = () => {
+        let array = [];
+        let temp = root;
+
+        for (let i = 0; i < this.getSize(); i++) {
+            array[i] = temp.value;
+            temp = temp.next;
+        }
+
+        return array;
     };
 
     this.getSize = () => {
@@ -58,7 +74,7 @@ function LList () {
 
     this.pop = () => {
         let temp = root;
-        let beforeElem;
+        let beforeElem = temp;
         let returnTemp;
 
         for (let i = 0; i < this.getSize(); i++) {
@@ -68,20 +84,24 @@ function LList () {
                 temp = temp.next;
             } else {
                 beforeElem.next = null;
-                returnTemp = temp;
+                returnTemp = temp.value;
                 size--;
             }
 
         }
 
-        return returnTemp.value;
+        return returnTemp;
     };
 
     this.shift = () => {
-        let temp = root;
-        root = temp.next;
-        size--;
-        return temp.value;
+        if (this.getSize() === 0 ) {
+            return undefined;
+        } else {
+            let temp = root;
+            root = temp.next;
+            size--;
+            return temp.value;
+        }
     };
 
     this.unshift = value => {
@@ -94,6 +114,19 @@ function LList () {
     };
 
     this.slice = (startIndex, finishIndex) => {
+
+        if (this.getSize() === 0 || startIndex < 0 ) {
+            return this.getArray();
+        }
+
+        if (startIndex > this.getSize()) {
+            return [];
+        }
+
+        if (finishIndex < startIndex) {
+            return [];
+        }
+
         let start = startIndex;
         let finish = finishIndex;
         let array = [];
@@ -103,16 +136,8 @@ function LList () {
         if(!startIndex && startIndex !== 0) {
             start = 0;
         }
-        
-        if (startIndex < 0 || startIndex > this.getSize()) {
-            throw new Error("Start index out of array!");
-        }
 
-        if (finishIndex < 0 || finishIndex > this.getSize()) {
-            throw new Error("Finish index out of array!");
-        }
-
-        if (!finishIndex) {
+        if (!finishIndex || finishIndex > this.getSize()) {
             finish = this.getSize();
         }
 
@@ -308,8 +333,5 @@ const sortFunc = (first, second) => {
 
 };
 
-let llist = new LList();
-llist.init([0, 1, 2, 3, 4, 5, 6, 7]);
-console.log(llist.splice(2,4, '*', '#'));
-console.log(llist.getSize());
-console.log(llist.toString());
+let array = [0, 1, 2 ,3 ,4 ,5];
+console.log(array.slice(undefined, 5));
